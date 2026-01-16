@@ -1,7 +1,7 @@
-import axios from "~/axios.ts";
+import axios from "../axios.ts";
 
-export function login(username, password) {
-  axios.post("/admin/login", {
+export function login(username: any, password: any) {
+  return axios.post("/admin/login", {
     username,
     password,
   });

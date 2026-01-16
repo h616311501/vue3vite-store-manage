@@ -36,6 +36,7 @@
             class="w-[500rpx]"
             type="primary"
             @click="onsubmit"
+            :loading="loading"
             >登录</el-button
           >
         </el-form-item>
@@ -45,18 +46,20 @@
 </template>
 
 <script setup lang="ts">
-import { ElNotification } from "element-plus";
+import { toast } from "../composables/util";
 import { ref, reactive } from "vue";
-import { login, getinfo } from "~/api/manager";
+import { login, getinfo } from "../api/manager";
 import { useRouter } from "vue-router";
-import { useCookies } from "@vueuse/integrations";
+import { useStore } from "vuex";
+import { setToken } from "../composables/auth";
 const router = useRouter();
-
+const store = useStore();
 const form = reactive({
   username: "",
   password: "",
 });
 
+const loading = ref(false);
 // required : 表示该字段是否为必填项。
 // message : 校验失败时显示的错误提示信息。
 // trigger : 触发校验的时机，常见的值有 'blur' 和 'change' 。
@@ -82,32 +85,33 @@ const rules = reactive({
 });
 
 const onsubmit = () => {
-  formRef.value.validate((valid) => {
+  loading.value = true;
+  formRef.value.validate((valid: any) => {
     if (!valid) {
       return false;
     }
     console.log("通过");
-    login(form.username, form.password).then((res) => {
-      console.log(res);
-      ElNotification({
-        title: "登录成功",
-        message: "登录成功",
-        type: "success",
-        duration: 3000,
+    login(form.username, form.password)
+      .then((res: any) => {
+        console.log(res);
+        toast("成功");
+
+        //跳转到首页
+        router.push("/index");
+
+        //存入token
+        setToken(res.token);
+
+        //获取用户信息
+        getinfo().then((res2: any) => {
+          store.commit("SET_USERINFO", res2);
+          console.log(res2);
+        });
+        loading.value = false;
+      })
+      .finally(() => {
+        loading.value = false;
       });
-
-      //跳转到首页
-      router.push("/index.vue");
-
-      //存入token
-      const cookie = useCookies();
-      cookie.set("token", res.token);
-
-      //获取用户信息
-      getinfo().then((res2) => {
-        console.log(res2);
-      });
-    });
   });
   console.log(form.username, form.password);
 };

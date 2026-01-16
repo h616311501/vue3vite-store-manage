@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useCookies } from "@vueuse/integrations";
-
+import { toast } from "./composables/util";
+import { getToken } from "~/composables/auth";
 const service = axios.create({
   baseURL: "/api",
 });
@@ -9,8 +9,7 @@ const service = axios.create({
 service.interceptors.request.use(
   function (config) {
     //给head头添加token
-    const cookies = useCookies();
-    const token = cookies.get("token");
+    const token = getToken();
     if (token) {
       config.headers["token"] = token;
     }
@@ -19,13 +18,6 @@ service.interceptors.request.use(
   },
   function (error) {
     // 对请求错误做些什么
-
-    ElNotification({
-      title: "出现错误",
-      message: error.response.data.msg,
-      type: "error",
-      duration: 3000,
-    });
 
     return Promise.reject(error);
   }
@@ -39,12 +31,7 @@ service.interceptors.response.use(
   },
   function (error) {
     // 对响应错误做点什么
-    ElNotification({
-      title: "出现错误",
-      message: error.response.data.msg,
-      type: "error",
-      duration: 3000,
-    });
+    toast("请求失败");
 
     return Promise.reject(error);
   }
