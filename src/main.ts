@@ -7,7 +7,7 @@ import router from "./router";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import stroe from "./store";
 import "./permission";
-
+import 'nprogress/nprogress.css'
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
@@ -16,5 +16,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(router);
 app.use(ElementPlus);
 app.use(stroe);
-
 app.mount("#app");

@@ -6,15 +6,21 @@ import login from "~/pages/login.vue";
 const routes: any = [
   {
     path: "/",
-    redirect: "/login", // 这里可以改为 '/home' 或任何其他路径来设置默认路由
+    redirect: "/index", // 这里可以改为 '/home' 或任何其他路径来设置默认路由
   },
   {
     path: "/login",
     component: login,
+    meta: {
+      title: '登录页'
+    }
   },
   {
     path: "/index",
     component: Index,
+    meta: {
+      title: '首页'
+    }
   },
 
   {

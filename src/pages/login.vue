@@ -47,11 +47,10 @@
 
 <script setup lang="ts">
 import { toast } from "../composables/util";
-import { ref, reactive } from "vue";
-import { login, getinfo } from "../api/manager";
+import { ref, reactive , onMounted , onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { setToken } from "../composables/auth";
+
 const router = useRouter();
 const store = useStore();
 const form = reactive({
@@ -85,36 +84,38 @@ const rules = reactive({
 });
 
 const onsubmit = () => {
-  loading.value = true;
-  formRef.value.validate((valid: any) => {
+  formRef.value.validate((valid: any) => {    
     if (!valid) {
       return false;
     }
-    console.log("通过");
-    login(form.username, form.password)
-      .then((res: any) => {
-        console.log(res);
-        toast("成功");
+  loading.value = true;
 
-        //跳转到首页
-        router.push("/index");
-
-        //存入token
-        setToken(res.token);
-
-        //获取用户信息
-        getinfo().then((res2: any) => {
-          store.commit("SET_USERINFO", res2);
-          console.log(res2);
-        });
-        loading.value = false;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  });
-  console.log(form.username, form.password);
+  store.dispatch("login",form).then((res:any) => {
+          toast(res)
+          router.push("/index")
+        }).finally(() => {
+      loading.value = false;
+    })
+  })
 };
+
+//监听回车方法
+function onKeyup(e){
+  if(e =='Enter'){
+    onsubmit()
+  }
+}
+//监听键盘事件
+
+
+onMounted(()=>
+{
+document.addEventListener("keyup",onKeyup)
+})
+
+onBeforeMount(()=>{
+  document.removeEventListener("keyup",onKeyup)
+})
 </script>
 
 <style scoped>
