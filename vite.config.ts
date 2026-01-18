@@ -19,6 +19,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@": path.resolve(__dirname, "src"), // 波浪线定义到src目录,类似@
       "~": path.resolve(__dirname, "src"), // 波浪线定义到src目录,类似@
     },
   },

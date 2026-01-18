@@ -3,10 +3,22 @@ import Index from "~/pages/index.vue";
 import about from "~/pages/about.vue";
 import notfound from "~/pages/notfound.vue";
 import login from "~/pages/login.vue";
+import admin from "../layouts/admin.vue";
 const routes: any = [
   {
     path: "/",
-    redirect: "/index", // 这里可以改为 '/home' 或任何其他路径来设置默认路由
+    component:admin,
+    //和布局相关的页面都需要放在子路由下
+    children:[
+      {
+        path:'/',
+        component:Index,
+        meta:{
+          title:"后台首页"
+        }
+      }
+    ],
+    redirect: "/", 
   },
   {
     path: "/login",

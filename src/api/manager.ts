@@ -14,3 +14,9 @@ export function getinfo() {
 export function loginout() {
   return axios.post("/admin/logout");
 }
+
+export function updatepassword(data: any) {
+  return axios.post("/admin/updatepassword",
+    data
+  );
+}
