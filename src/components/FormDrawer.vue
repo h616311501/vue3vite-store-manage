@@ -12,7 +12,7 @@
     </div>
   </el-drawer>
 </template>
-<script setup>
+<script setup lang="ts">
 import { descriptionItemProps } from 'element-plus';
 import { ref } from 'vue';
 const showDrawer = ref(false)
@@ -24,7 +24,7 @@ const props = defineProps({
     type: String,
     default: '45%'
   },
-  destroyOnColse: {
+  destroyOnClose: {
     type: Boolean,
     default: false
   },

@@ -4,21 +4,29 @@ import about from "~/pages/about.vue";
 import notfound from "~/pages/notfound.vue";
 import login from "~/pages/login.vue";
 import admin from "../layouts/admin.vue";
+import goodslist from '../pages/goods/list.vue'
 const routes: any = [
   {
     path: "/",
-    component:admin,
+    component: admin,
     //和布局相关的页面都需要放在子路由下
-    children:[
+    children: [
       {
-        path:'/',
-        component:Index,
-        meta:{
-          title:"后台首页"
+        path: '/',
+        component: Index,
+        meta: {
+          title: "后台首页"
         }
-      }
+      },
+      {
+        path: '/goods/list',
+        component: goodslist,
+        meta: {
+          title: "商品管理"
+        }
+      },
     ],
-    redirect: "/", 
+    redirect: "/",
   },
   {
     path: "/login",

@@ -6,15 +6,12 @@ export function login(username: any, password: any) {
     password,
   });
 }
-
+export function logout() {
+  return axios.post("/admin/logout");
+}
 export function getinfo() {
   return axios.post("/admin/getinfo");
 }
-
-export function loginout() {
-  return axios.post("/admin/logout");
-}
-
 export function updatepassword(data: any) {
   return axios.post("/admin/updatepassword",
     data

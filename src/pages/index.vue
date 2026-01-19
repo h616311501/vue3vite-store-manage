@@ -7,28 +7,28 @@
 </template>
 
 <script setup>
-  import { loginout } from '../api/manager';
+import { logout } from '../api/manager';
 import { removeToken } from '../composables/auth';
-  import { showModel ,toast} from '../composables/util';
-  import { useRouter } from 'vue-router';
-import {useStore} from 'vuex'
+import { showModel, toast } from '../composables/util';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex'
 const store = useStore()
 
-  const router = useRouter()
-  function handlelogout(){
-    showModel("是否退出登录").then(res=>{
-      loginout().finally(()=>{
-        //移除token
-        removeToken()
-        //清除vuex内的状态
-        store.dispatch("logout")
-        //跳转回登录页
-        router.push('/login')
+const router = useRouter()
+function handlelogout() {
+  showModel("是否退出登录").then(res => {
+    logout().finally(() => {
+      //移除token
+      removeToken()
+      //清除vuex内的状态
+      store.dispatch("logout")
+      //跳转回登录页
+      router.push('/login')
       toast("退出")
 
-      })  
     })
-  }
+  })
+}
 </script>
 
 <style lang="scss" scoped></style>

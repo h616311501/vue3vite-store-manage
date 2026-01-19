@@ -5,8 +5,9 @@
         <ElemeFilled />
       </el-icon>
     </span>
-    <el-icon class="icon-btn">
-      <Fold />
+    <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
+      <Fold v-if="$store.state.asideWidth == '250px'" />
+      <Expand v-else />
     </el-icon>
     <el-tooltip effect="dark" placement="bottom" content="刷新">
       <el-icon class="icon-btn" @click="handleRefresh">
@@ -61,73 +62,31 @@
 <script setup lang="ts">
 import FormDrawer from '@/components/FormDrawer.vue';
 import { Refresh, Fold, ElemeFilled, FullScreen } from '@element-plus/icons-vue';
-import { loginout, updatepassword } from '@/api/manager';
 import { removeToken } from '@/composables/auth';
-import { showModel, toast } from '@/composables/util';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex'
 import { useFullscreen } from '@vueuse/core';
-import { ref, reactive } from 'vue'
-const form = reactive({
-  oldpassword: "",
-  password: "",
-  repassword: "",
-});
-const formDrawerRef = ref<any>()
-const formRef = ref();
-const rules = reactive({
-  oldpassword: [
-    {
-      required: true, //是否必填
-      message: "旧密码不为空", //错误提示信息
-      trigger: "blur", //触发时机 : 失去焦点
-    },
-  ],
-  password: [
-    {
-      required: true, //是否必填
-      message: "新密码不为空", //错误提示信息
-      trigger: "blur", //触发时机 : 失去焦点
-    },
-  ],
-  repassword: [
-    {
-      required: true, //是否必填
-      message: "确认密码不为空", //错误提示信息
-      trigger: "blur", //触发时机 : 失去焦点
-    },
-  ],
-});
-
-const onSubmit = () => {
-  formRef.value.validate((valid: any) => {
-    if (!valid) {
-      return false;
-    }
-    formDrawerRef.value.showLoading()
-    updatepassword(form).then(res => {
-      toast(res.msg)
-      store.dispatch("logout")
-      router.push('/login')
-
-    }).finally(() => {
-      formDrawerRef.value.hideLoading()
-    })
-  })
-};
-
-const store = useStore()
+import { useRepassword, useLogout } from '@/composables/useManager'
 const { isFullscreen, toggle } = useFullscreen()
+const {
+  formDrawerRef,
+  form,
+  rules,
+  formRef,
+  onSubmit,
+  openRePasswordForm
+} = useRepassword()
 const router = useRouter()
-
+const { handlelogout } = useLogout()
 
 const handleCommand = (e: any) => {
+  console.log(e)
   switch (e) {
     case 'logout':
+      removeToken()
       handlelogout()
       break;
     case 'rePassword':
-      formDrawerRef.value.open()
+      openRePasswordForm()
       console.log('re')
       break;
     default:
@@ -135,26 +94,9 @@ const handleCommand = (e: any) => {
   }
 }
 
-function handlelogout() {
-  showModel("是否退出登录").then(res => {
-    loginout().finally(() => {
-      //移除token
-      removeToken()
-      //清除vuex内的状态
-      store.dispatch("logout")
-      //跳转回登录页
-      router.push('/login')
-      toast("退出")
-
-    })
-  })
-}
-
 function handleRefresh() {
   location.reload()
 }
-
-
 
 </script>
 <style lang="scss" scoped>
