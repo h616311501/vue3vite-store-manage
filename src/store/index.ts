@@ -1,4 +1,4 @@
-import { createStore, } from "vuex";
+import { createStore } from "vuex";
 import { login, getinfo } from "../api/manager";
 import { setToken } from "../composables/auth";
 import { removeToken } from "../composables/auth";
@@ -9,7 +9,10 @@ const store = createStore({
       user: {},
 
       //侧边宽度
-      asideWidth: '250px'
+      asideWidth: "250px",
+
+      menus: [],
+      ruleNames: []
     };
   },
   mutations: {
@@ -18,30 +21,42 @@ const store = createStore({
     },
     // 展开/锁起
     handleAsideWidth(state: any) {
-      state.asideWidth = state.asideWidth == "250px" ? "64px" : '250px'
+      state.asideWidth = state.asideWidth == "250px" ? "64px" : "250px";
+    },
+    SET_MENUS(state, menus) {
+      state.menus = menus;
+    },
+    SET_RULENAMES(state, ruleNames) {
+      state.ruleNames = ruleNames;
     }
   },
   actions: {
     login({ commit }: any, { username, password }: any) {
       return new Promise((resolve, reject) => {
-        login(username, password).then((res) => {
-          //存入token
-          setToken(res.token);
-          resolve(res)
-        }).catch(err => reject(err))
-      })
+        login(username, password)
+          .then((res) => {
+            //存入token
+            setToken(res.token);
+            resolve(res);
+          })
+          .catch((err) => reject(err));
+      });
     },
     getinfo({ commit }: any) {
       return new Promise((resolve, reject) => {
-        getinfo().then((res: any) => {
-          commit("SET_USERINFO", res)
-          resolve(res)
-        }).catch(err => reject(err))
-      })
+        getinfo()
+          .then((res: any) => {
+            commit("SET_USERINFO", res);
+            commit("SET_MENUS", res.menus);
+            commit("SET_RULENAMES", res.ruleNames);
+            resolve(res);
+          })
+          .catch((err) => reject(err));
+      });
     },
     logout({ commit }: any) {
-      removeToken()
-      commit("SET_USERINFO", "")
+      removeToken();
+      commit("SET_USERINFO", "");
     }
   }
 });
