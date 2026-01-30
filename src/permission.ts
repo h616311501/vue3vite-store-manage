@@ -4,7 +4,7 @@ import { router, addRoutes } from "./router";
 import store from "./store";
 
 //全局前置守卫
-
+let hasGetInfo = false;
 router.beforeEach(async (to, from, next) => {
   showFullLoading();
   const token = getToken();
@@ -20,8 +20,9 @@ router.beforeEach(async (to, from, next) => {
   }
   let dynamicRoutesAdded = false;
 
-  if (token) {
+  if (token && !hasGetInfo) {
     let { menus } = await store.dispatch("getinfo");
+    hasGetInfo = true;
     //这里动态添加路由
     dynamicRoutesAdded = addRoutes(menus);
   }

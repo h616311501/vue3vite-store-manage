@@ -1,33 +1,81 @@
 <template>
   <div>
-    这是后管首页
-    {{ $store.state.user.username }}
-    <el-button @click="handlelogout">退出登录</el-button>
+    <el-row :gutter="20" class="mt-5">
+      <template v-if="panels.length == 0">
+        <el-col :span="6" v-for="i in 4" :key="i">
+          <el-skeleton style="width: 100%" animated loading>
+            <template #template>
+              <el-card shadow="hover" class="border-0">
+                <template #header>
+                  <div class="flex justify-between">
+                    <el-skeleton-item variant="text" style="width: 50%" />
+                    <el-skeleton-item variant="text" style="width: 10%" />
+                  </div>
+                </template>
+                <!-- card body -->
+                <el-skeleton-item variant="h3" style="width: 80%" />
+                <el-divider></el-divider>
+                <div class="flex justify-between text-sm text-gray-500">
+                  <el-skeleton-item variant="text" style="width: 50%" />
+                  <el-skeleton-item variant="text" style="width: 10%" />
+                </div>
+              </el-card>
+            </template>
+          </el-skeleton>
+        </el-col>
+      </template>
+
+      <el-col
+        :span="6"
+        :offset="0"
+        v-for="(item, index) in panels"
+        :key="index"
+      >
+        <el-card shadow="hover" class="border-0">
+          <template #header>
+            <div class="flex justify-between">
+              <span class="text-sm">{{ item.title }}</span>
+              <el-tag :key="item.unitColor" :type="item.type" effect="plain">
+                {{ item.unit }}
+              </el-tag>
+            </div>
+          </template>
+          <!-- card body -->
+          <span class="text-3xl font-bold text-gray-500">
+            <CountTo :value="item.value"></CountTo>
+          </span>
+          <el-divider></el-divider>
+          <div class="flex justify-between text-sm text-gray-500">
+            <span>{{ item.subTitle }}</span>
+            <span>{{ item.subValue }}</span>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <IndexNavs></IndexNavs>
+
+    <el-row :gutter="20">
+      <el-col :span="12" :offset="0">
+        <IndexChart></IndexChart>
+      </el-col>
+      <el-col :span="12" :offset="0"></el-col>
+    </el-row>
   </div>
 </template>
 
 <script setup>
-  import { logout } from "../api/manager";
-  import { removeToken } from "../composables/auth";
-  import { showModel, toast } from "../composables/util";
-  import { useRouter } from "vue-router";
-  import { useStore } from "vuex";
-  const store = useStore();
+  import { getStatistics1 } from "~/api/index.ts";
+  import CountTo from "~/components/CountTo.vue";
+  import IndexNavs from "../components/IndexNavs.vue";
+  import IndexChart from "../components/IndexChart.vue";
+  import { ref } from "vue";
+  const panels = ref([]);
 
-  const router = useRouter();
-  function handlelogout() {
-    showModel("是否退出登录").then((res) => {
-      logout().finally(() => {
-        //移除token
-        removeToken();
-        //清除vuex内的状态
-        store.dispatch("logout");
-        //跳转回登录页
-        router.push("/login");
-        toast("退出");
-      });
-    });
-  }
+  getStatistics1().then((res) => {
+    console.log(res);
+    panels.value = res.panels;
+  });
 </script>
 
 <style lang="scss" scoped></style>

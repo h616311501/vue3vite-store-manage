@@ -1,7 +1,7 @@
 <template>
   <view class="f-tag-list" :style="{ left: $store.state.asideWidth }">
     <el-tabs
-      v-model="activeTab"
+      :v-model="activeTab"
       type="card"
       @tab-remove="removeTab"
       class="demo-tabs flex-1"
@@ -18,7 +18,7 @@
     </el-tabs>
 
     <span class="tag-btn">
-      <el-dropdown>
+      <el-dropdown @command="handleClose">
         <span class="el-dropdown-link">
           <el-icon class="">
             <arrow-down />
@@ -26,11 +26,8 @@
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>Action 1</el-dropdown-item>
-            <el-dropdown-item>Action 2</el-dropdown-item>
-            <el-dropdown-item>Action 3</el-dropdown-item>
-            <el-dropdown-item disabled>Action 4</el-dropdown-item>
-            <el-dropdown-item divided>Action 5</el-dropdown-item>
+            <el-dropdown-item command="clearOther">关闭其他</el-dropdown-item>
+            <el-dropdown-item command="clearAll">全部关闭</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -38,47 +35,10 @@
   </view>
   <div style="height: 44px"></div>
 </template>
-<script lang="ts" setup>
-  import { ref } from "vue";
-  import { useRoute, onBeforeRouteUpdate, useRouter } from "vue-router";
-  import { useCookies } from "@vueuse/integrations";
-  const route = useRoute();
-  const router = useRouter();
-  const cookie = useCookies();
-  const activeTab = ref(route.path);
-  const tabList = ref([
-    {
-      title: "后台首页",
-      path: "/"
-    }
-  ]);
-
-  function addTab(tab) {
-    let noTab = tabList.value.findIndex((t) => t.path == tab.path) == -1;
-    if (noTab) {
-      tabList.value.push(tab);
-    }
-    cookie.set("tabList", tabList.value);
-  }
-  onBeforeRouteUpdate((to, from) => {
-    activeTab.value = to.path;
-    addTab({
-      title: to.meta.title,
-      path: to.path
-    });
-  });
-  //初始化标签
-  function initTabList() {
-    let tbs = cookie.get("tabList");
-    if (tbs) {
-      tabList.value = tbs;
-    }
-  }
-  initTabList();
-  const changeTab = (t) => {
-    router.push(t);
-  };
-  const removeTab = (targetName) => {};
+<script setup lang="ts">
+  import { useTablist } from "~/composables/useTabList";
+  const { activeTab, tabList, changeTab, removeTab, handleClose } =
+    useTablist();
 </script>
 
 <style scoped>

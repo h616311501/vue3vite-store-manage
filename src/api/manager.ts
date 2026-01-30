@@ -1,9 +1,9 @@
-import axios from "../axios.ts";
+import axios from "~/axios.ts";
 
 export function login(username: any, password: any) {
   return axios.post("/admin/login", {
     username,
-    password,
+    password
   });
 }
 export function logout() {
@@ -13,7 +13,5 @@ export function getinfo() {
   return axios.post("/admin/getinfo");
 }
 export function updatepassword(data: any) {
-  return axios.post("/admin/updatepassword",
-    data
-  );
+  return axios.post("/admin/updatepassword", data);
 }
