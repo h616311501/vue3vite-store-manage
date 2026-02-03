@@ -17,14 +17,14 @@
       </div>
     </template>
     <!-- card body -->
-    <div id="chart" style="width: 100%; height: 300px"></div>
+    <div ref="el" id="chart" style="width: 100%; height: 300px"></div>
   </el-card>
 </template>
 
 <script setup>
   import { ref, onMounted } from "vue";
   import * as echarts from "echarts";
-
+  import { useResizeObserver } from "@vueuse/core";
   import { getStatistics3 } from "~/api";
 
   const current = ref("week");
@@ -83,4 +83,6 @@
         myChart.hideLoading();
       });
   }
+  const el = ref(null);
+  useResizeObserver(el, (entries) => myChart.resize());
 </script>

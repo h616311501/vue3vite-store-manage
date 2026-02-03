@@ -55,26 +55,43 @@
 
     <IndexNavs></IndexNavs>
 
-    <el-row :gutter="20">
+    <el-row :gutter="20" class="mt-5">
       <el-col :span="12" :offset="0">
         <IndexChart></IndexChart>
       </el-col>
-      <el-col :span="12" :offset="0"></el-col>
+      <el-col :span="12" :offset="0">
+        <IndexCard
+          title="店铺"
+          tip="店铺与提示"
+          :btns="goods"
+          class="mb-3"
+        ></IndexCard>
+        <IndexCard title="交易" tip="需要立即处理" :btns="order"></IndexCard>
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script setup>
-  import { getStatistics1 } from "~/api/index.ts";
+  import { getStatistics1, getStatistics2 } from "~/api/index.ts";
   import CountTo from "~/components/CountTo.vue";
   import IndexNavs from "../components/IndexNavs.vue";
   import IndexChart from "../components/IndexChart.vue";
+  import IndexCard from "../components/IndexCard.vue";
   import { ref } from "vue";
   const panels = ref([]);
 
   getStatistics1().then((res) => {
     console.log(res);
     panels.value = res.panels;
+  });
+
+  const goods = ref([]);
+  const order = ref([]);
+  getStatistics2().then((res) => {
+    console.log(res);
+    goods.value = res.goods;
+    order.value = res.order;
   });
 </script>
 
