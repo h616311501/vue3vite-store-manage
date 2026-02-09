@@ -1,7 +1,7 @@
 <template>
   <div class="f-menu" :style="{ width: $store.state.asideWidth }">
     <el-menu
-      unique-opened="true"
+      :unique-opened=true
       :collapse-transition="false"
       :collapse="isCollapse"
       :default-active="defaultActive"

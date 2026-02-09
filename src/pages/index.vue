@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="20" class="mt-5">
+    <el-row :gutter="20" class="mt-5" v-permission="['getStatistics1,GET']">
       <template v-if="panels.length == 0">
         <el-col :span="6" v-for="i in 4" :key="i">
           <el-skeleton style="width: 100%" animated loading>
@@ -57,9 +57,10 @@
 
     <el-row :gutter="20" class="mt-5">
       <el-col :span="12" :offset="0">
-        <IndexChart></IndexChart>
+        <!-- 这里配合permission指令，如果没有权限，则不显示,具体在directives/permission.ts中定义 -->
+        <IndexChart v-permission="['getStatistics3,GET']"></IndexChart>
       </el-col>
-      <el-col :span="12" :offset="0">
+      <el-col :span="12" :offset="0" v-permission="['getStatistics2,GET']">
         <IndexCard
           title="店铺"
           tip="店铺与提示"

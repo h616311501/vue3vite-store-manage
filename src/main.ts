@@ -8,11 +8,15 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import stroe from "./store";
 import "./permission";
 import "nprogress/nprogress.css";
+
+
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
+import permission from "./directives/permission.ts";
 
+app.use(permission);
 app.use(router);
 app.use(ElementPlus);
 app.use(stroe);

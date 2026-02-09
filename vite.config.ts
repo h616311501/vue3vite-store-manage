@@ -14,7 +14,7 @@ export default defineConfig(({ command, mode }) => {
       port: 3210,
       proxy: {
         "/api": {
-          target: "http://ceshi13.dishait.cn",
+          target: "https://tingwei.xin",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, "")
         }
